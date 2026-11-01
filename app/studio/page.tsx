@@ -18,7 +18,7 @@ export default function Studio() {
         </p>
       </PageIntro>
       <div className="section-head">
-        <h2>See the possibilities.</h2>
+        <h2>Concept portfolio. Real possibilities.</h2>
         <p>
           Fictional design concepts, not client projects. No bookings or orders
           are processed.
@@ -103,6 +103,97 @@ export default function Studio() {
               </Link>
             </article>
           ))}
+        </div>
+      </section>
+      <section className="section">
+        <p className="eyebrow">AFTER LAUNCH, TOO</p>
+        <h2>A website you can keep building on.</h2>
+        <div className="cards three">
+          {[
+            [
+              'Maintenance & care',
+              'Scope software updates, backups, accessibility reviews, and content changes. Agree on responsibilities and response windows before subscribing.',
+            ],
+            [
+              'CRM & automation',
+              'Explore enquiry routing and follow-up with an approved CRM. Connections need verified APIs, consent handling, and least-privilege access.',
+            ],
+            [
+              'Service upgrades',
+              'Add service pages, content, and new enquiry journeys as your business changes. Quote each change before work begins.',
+            ],
+          ].map(([title, copy]) => (
+            <article className="service-card" key={title}>
+              <h3>{title}</h3>
+              <p>{copy}</p>
+            </article>
+          ))}
+        </div>
+        <div className="actions">
+          <Link className="button secondary" href="/studio/inquire">
+            Ask about Website Studio →
+          </Link>
+          <Link className="button secondary" href="/studio/onboarding">
+            Explore project onboarding →
+          </Link>
+        </div>
+      </section>
+      <section>
+        <h2>Compare the shape of your project.</h2>
+        <div
+          className="table-scroll"
+          role="region"
+          aria-label="Website scope comparison"
+          tabIndex={0}
+        >
+          <table className="comparison">
+            <caption>
+              Illustrative scope — final deliverables are agreed in writing.
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Capability</th>
+                <th scope="col">Essential</th>
+                <th scope="col">Showcase</th>
+                <th scope="col">Growth-ready</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                [
+                  'Core business presence',
+                  'Included in scope',
+                  'Included in scope',
+                  'Included in scope',
+                ],
+                [
+                  'Dedicated service pages',
+                  'Optional upgrade',
+                  'Planned in scope',
+                  'Expanded scope',
+                ],
+                [
+                  'CRM & automation',
+                  'Discovery optional',
+                  'Discovery optional',
+                  'Integration discovery',
+                ],
+                [
+                  'Maintenance',
+                  'Separately scoped',
+                  'Separately scoped',
+                  'Separately scoped',
+                ],
+              ].map(([feature, ...values]) => (
+                <tr key={feature}>
+                  <th scope="row">{feature}</th>
+                  {values.map((v, i) => (
+                    <td key={i}>{v}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </section>
       <aside className="notice">

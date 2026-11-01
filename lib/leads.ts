@@ -1,4 +1,32 @@
-export const journeys = ['visibility', 'website', 'consulting'] as const
+export const journeys = [
+  'visibility',
+  'website',
+  'consulting',
+  'contact',
+] as const
+export const services = [
+  'visibility',
+  'website-inquiry',
+  'website-quote',
+  'blueprint',
+  'automation',
+  'management',
+  'contact',
+] as const
+export type Service = (typeof services)[number]
+export const packages = ['unsure', 'essential', 'showcase', 'growth'] as const
+export const upgrades = ['maintenance', 'crm', 'automation', 'content'] as const
+export function classifyLead(service: Service) {
+  const queue =
+    service === 'visibility'
+      ? 'visibility-review'
+      : service.startsWith('website')
+        ? 'website-discovery'
+        : service === 'contact'
+          ? 'general-inquiries'
+          : 'growth-consultation'
+  return { classification: service, queue }
+}
 export type Journey = (typeof journeys)[number]
 export type Lead = {
   journey: Journey
@@ -10,6 +38,10 @@ export type Lead = {
   consent: true
   profile: string
   followup: string
+  service: Service
+  package: string
+  upgrades: string[]
+  timeline: string
 }
 export function validateLead(value: unknown): { lead?: Lead; error?: string } {
   if (!value || typeof value !== 'object' || Array.isArray(value))
@@ -24,6 +56,9 @@ export function validateLead(value: unknown): { lead?: Lead; error?: string } {
     goal: 2000,
     profile: 10,
     followup: 10,
+    service: 30,
+    package: 20,
+    timeline: 20,
   }
   for (const [key, max] of Object.entries(limits)) {
     if (
@@ -73,6 +108,37 @@ export function validateLead(value: unknown): { lead?: Lead; error?: string } {
     ![profile, followup].every((s) => ['yes', 'no', 'unsure', ''].includes(s))
   )
     return { error: 'Invalid assessment response.' }
+  const defaultService =
+    journey === 'visibility'
+      ? 'visibility'
+      : journey === 'website'
+        ? 'website-quote'
+        : journey === 'contact'
+          ? 'contact'
+          : 'automation'
+  const service = (text('service', 30) || defaultService) as Service
+  const allowed: Record<Journey, readonly string[]> = {
+    visibility: ['visibility'],
+    website: ['website-inquiry', 'website-quote'],
+    consulting: ['blueprint', 'automation', 'management'],
+    contact: ['contact'],
+  }
+  const selectedPackage = text('package', 20) || 'unsure'
+  const selectedUpgrades = v.upgrades === undefined ? [] : v.upgrades
+  const timeline = text('timeline', 20) || 'unsure'
+  if (
+    !allowed[journey].includes(service) ||
+    !packages.includes(selectedPackage as (typeof packages)[number]) ||
+    !Array.isArray(selectedUpgrades) ||
+    selectedUpgrades.length > 4 ||
+    selectedUpgrades.some(
+      (x) =>
+        typeof x !== 'string' ||
+        !upgrades.includes(x as (typeof upgrades)[number])
+    ) ||
+    !['unsure', 'soon', 'quarter', 'exploring'].includes(timeline)
+  )
+    return { error: 'Choose valid service and project options.' }
   return {
     lead: {
       journey,
@@ -84,6 +150,10 @@ export function validateLead(value: unknown): { lead?: Lead; error?: string } {
       consent: true,
       profile,
       followup,
+      service,
+      package: selectedPackage,
+      upgrades: [...new Set(selectedUpgrades)] as string[],
+      timeline,
     },
   }
 }

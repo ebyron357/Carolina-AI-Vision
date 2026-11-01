@@ -1,21 +1,15 @@
+import { intakeEnabled } from '@/lib/lead-storage'
 import { connection } from 'next/server'
 import { Suspense } from 'react'
 import { LeadForm } from '@/components/lead-form'
 import { PageIntro } from '@/components/page-intro'
 export const metadata = {
-  title: 'Free Ai Visibility Check',
+  title: 'Free AI Visibility Check',
   alternates: { canonical: '/visibility' },
 }
 async function Intake() {
   await connection()
-  return (
-    <LeadForm
-      journey="visibility"
-      enabled={Boolean(
-        process.env.LEAD_INTAKE_URL && process.env.LEAD_INTAKE_TOKEN
-      )}
-    />
-  )
+  return <LeadForm journey="visibility" enabled={intakeEnabled()} />
 }
 export default function Page() {
   return (

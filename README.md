@@ -1,6 +1,6 @@
 # Carolina Local AI / Carolina AI Vision
 
-A review-stage business website on the existing Next.js foundation. **Not production-ready:** real lead intake and independent visibility research are not connected.
+A review-stage business website on the existing Next.js foundation. **Not production-ready:** live database intake and independent visibility research are not connected.
 
 ## Product
 
@@ -21,6 +21,8 @@ pnpm dev
 pnpm lint
 pnpm typegen && pnpm exec tsc --noEmit
 pnpm test --runInBand --watch=false
+pnpm test:integration
+pnpm security:source
 pnpm build
 pnpm exec playwright install chromium
 pnpm test:e2e
@@ -29,16 +31,17 @@ pnpm audit --prod
 
 A CI workflow was prepared but cannot be included by the publishing integration (workflow permission restriction). It is provided separately for the owner to add. Hosted CI execution remains unverified.
 
-## Intake configuration — do not enable yet
+## Intake configuration — disabled pending approval
 
-No environment variables were present in the inspected project. The site deliberately disables submission without `LEAD_INTAKE_URL` and `LEAD_INTAKE_TOKEN`. They are server-only. Do not put values in Git, browser code, PRs, or chat.
+The inspected project has no environment variables or connected storage. The PostgreSQL migration/adapter implements persistence, consent/audit records, server classification, pending CRM outbox, database-backed throttling and duplicate receipts. Local embedded PostgreSQL tests verify real SQL behavior, not a connected Vercel database.
 
-Before enabling intake, approve and test a durable storage destination, privacy contact, retention/deletion policy, access controls, distributed abuse controls, and operational response process. Read [the integration contract](docs/INTEGRATIONS.md). The current adapter is not a configured CRM or database.
+Configuration requires an owner-approved database/migration/runtime role, `DATABASE_URL`, `LEAD_HASH_SECRET` (32+ unpredictable characters), and explicit `LEAD_INTAKE_ENABLED=true`. Do not enable before privacy/legal review, retention/deletion policy, access ownership and an operational follow-up process are in place. Secrets are server-only and must use protected entry. Never put values in Git, browser code, PRs or chat. See [the integration contract and activation gates](docs/INTEGRATIONS.md).
 
-Analytics is rendered only if `NEXT_PUBLIC_ENABLE_ANALYTICS=true`; do not enable before reviewing disclosure and applicable consent requirements. No new external service was purchased or connected.
+ClientVerse repository access was denied; no real endpoint or dispatcher is invented. Stored outbox records remain `pending_configuration` and the UI never claims CRM delivery. Analytics remains explicitly opt-in and disabled in the inspected project.
 
 ## Delivery and launch
 
+- [Independent PR #2 recheck](docs/PR2-REVIEW.md)
 - [Repository audit](docs/REPOSITORY-AUDIT.md)
 - [Acceptance and launch gates](docs/IMPLEMENTATION-PLAN.md)
 - [Agent instructions](AGENTS.md)

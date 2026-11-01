@@ -1,3 +1,4 @@
+import { intakeEnabled } from '@/lib/lead-storage'
 import { connection } from 'next/server'
 import { Suspense } from 'react'
 import { LeadForm } from '@/components/lead-form'
@@ -8,14 +9,7 @@ export const metadata = {
 }
 async function Intake() {
   await connection()
-  return (
-    <LeadForm
-      journey="consulting"
-      enabled={Boolean(
-        process.env.LEAD_INTAKE_URL && process.env.LEAD_INTAKE_TOKEN
-      )}
-    />
-  )
+  return <LeadForm journey="consulting" enabled={intakeEnabled()} />
 }
 export default function Page() {
   return (

@@ -744,3 +744,93 @@ input[type='checkbox'] {
     scroll-behavior: auto !important;
   }
 }
+
+.light-section :focus-visible,
+.demo-page :focus-visible {
+  outline-color: #10233c;
+}
+.service-card:focus-within {
+  border-color: var(--blue);
+}
+.fieldset {
+  border: 1px solid #607897;
+  padding: 16px;
+  margin: 20px 0;
+}
+.fieldset legend {
+  padding: 0 8px;
+  font-weight: 650;
+  font-size: 14px;
+}
+.fieldset label {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin: 10px 0;
+  font-size: 14px;
+}
+.fieldset input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--orange);
+}
+.field-help {
+  font-size: 12px;
+  color: var(--soft);
+}
+.receipt-heading:focus {
+  outline: none;
+}
+.comparison {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 28px 0;
+  font-size: 14px;
+}
+.comparison th,
+.comparison td {
+  border: 1px solid #365275;
+  text-align: left;
+  padding: 15px;
+}
+.table-scroll {
+  overflow: auto;
+}
+@media (max-width: 1050px) {
+  .desktop-nav {
+    gap: 12px;
+  }
+  .desktop-nav a {
+    font-size: 11px;
+  }
+}
+@media (max-width: 900px) {
+  .desktop-nav {
+    display: none;
+  }
+  .mobile-nav {
+    display: block;
+    position: relative;
+  }
+  .mobile-nav summary {
+    min-height: 44px;
+    padding: 10px;
+    cursor: pointer;
+  }
+  .mobile-nav nav {
+    position: absolute;
+    right: 0;
+    top: 52px;
+    width: 240px;
+    background: #172d48;
+    z-index: 10;
+    border: 1px solid #607897;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .mobile-nav nav a {
+    padding: 10px;
+  }
+}

@@ -10,7 +10,16 @@ const valid = {
 }
 test('normalizes a valid lead without adding arbitrary fields', () => {
   expect(validateLead({ ...valid, name: ' Owner ', admin: true }).lead).toEqual(
-    { ...valid, name: 'Owner', profile: '', followup: '' }
+    {
+      ...valid,
+      name: 'Owner',
+      profile: '',
+      followup: '',
+      service: 'website-quote',
+      package: 'unsure',
+      upgrades: [],
+      timeline: 'unsure',
+    }
   )
 })
 test.each([
@@ -47,4 +56,36 @@ test.each([
   { ...valid, website: 123 },
 ])('rejects malformed optional fields %#', (v) =>
   expect(validateLead(v).error).toBeDefined()
+)
+
+test.each([
+  'visibility',
+  'website-inquiry',
+  'website-quote',
+  'blueprint',
+  'automation',
+  'management',
+  'contact',
+])('classifies approved service %s', (service) => {
+  const journey =
+    service === 'visibility'
+      ? 'visibility'
+      : service.startsWith('website')
+        ? 'website'
+        : ['blueprint', 'automation', 'management'].includes(service)
+          ? 'consulting'
+          : 'contact'
+  expect(validateLead({ ...valid, journey, service }).lead?.service).toBe(
+    service
+  )
+})
+test.each([
+  { service: 'admin' },
+  { package: 'fake' },
+  { upgrades: ['admin'] },
+  { upgrades: 'crm' },
+  { timeline: 'fake' },
+  { journey: 'visibility', service: 'website-quote' },
+])('rejects unapproved scope options %#', (options) =>
+  expect(validateLead({ ...valid, ...options }).error).toBeDefined()
 )

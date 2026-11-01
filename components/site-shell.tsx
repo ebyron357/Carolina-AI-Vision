@@ -7,6 +7,7 @@ const links = [
   ['/studio', 'Website Studio'],
   ['/consulting', 'AI & automation'],
   ['/about', 'About'],
+  ['/contact', 'Contact'],
 ]
 export function Header() {
   return (
@@ -68,6 +69,7 @@ export function Footer() {
         <nav aria-label="Footer navigation">
           <Link href="/studio">Website Studio</Link>
           <Link href="/consulting">Consulting & automation</Link>
+          <Link href="/contact">Contact</Link>
           <Link href="/privacy">Privacy</Link>
           <Link href="/terms">Terms</Link>
         </nav>

@@ -9,17 +9,23 @@ export default function Privacy() {
       <h1>Your details deserve a clear purpose.</h1>
       <h2>What this site collects</h2>
       <p>
-        Forms request your name, business, email, optional website, goals, and
+        Forms request your name, business, email, optional website, goals,
+        selected service, project scope, optional upgrades, timeline, and
         consent. The visibility self-check runs in your browser and is based
         only on your answers; it does not scan your site or AI platforms.
       </p>
       <h2>Submission status</h2>
       <p>
         While intake is unconfigured, submission is unavailable and form details
-        are not stored by the application. Once an approved receiver is
-        configured, submissions are sent server-side to that receiver for a
-        response to your request. A success message requires its confirmation
-        that storage occurred. A failed response may leave delivery uncertain.
+        are not stored by the application. Once an approved database is
+        configured and intake is explicitly enabled, submissions are stored
+        server-side with consent time, notice version, service classification,
+        audit record, and a pending CRM handoff. A receipt confirms storage, not
+        CRM delivery. A keyed one-way digest of the request IP is kept
+        temporarily for abuse limits; raw IP addresses are not stored by this
+        application. Request fingerprints support duplicate prevention. A failed
+        response may leave storage uncertain; retrying the same form reuses its
+        request reference.
       </p>
       <h2>Use and access</h2>
       <p>

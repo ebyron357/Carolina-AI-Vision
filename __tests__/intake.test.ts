@@ -1,6 +1,12 @@
 /** @jest-environment node */
 import { NextRequest } from 'next/server'
 import { POST } from '@/app/api/leads/route'
+import { storeLead } from '@/lib/lead-storage'
+jest.mock('@/lib/lead-storage', () => ({
+  intakeEnabled: () => process.env.LEAD_INTAKE_ENABLED === 'true',
+  storeLead: jest.fn(),
+}))
+const stored = jest.mocked(storeLead)
 const valid = {
   journey: 'website',
   name: 'Sample',
@@ -10,65 +16,76 @@ const valid = {
   goal: 'A clear site',
   consent: true,
   startedAt: Date.now() - 5000,
+  requestId: 'b4364a1d-363d-4d12-bb60-4040dcfe03ea',
 }
-const send = (body: unknown, origin = 'https://example.test', extra = {}) =>
+const send = (
+  body: unknown,
+  origin = 'https://example.test',
+  type = 'application/json'
+) =>
   POST(
     new NextRequest('https://example.test/api/leads', {
       method: 'POST',
-      headers: { origin, 'content-type': 'application/json', ...extra },
+      headers: { origin, 'content-type': type },
       body: JSON.stringify(body),
     })
   )
 beforeEach(() => {
-  delete process.env.LEAD_INTAKE_URL
-  delete process.env.LEAD_INTAKE_TOKEN
+  process.env.LEAD_INTAKE_ENABLED = 'false'
+  stored.mockReset()
 })
-test('rejects cross-origin request', async () =>
-  expect((await send(valid, 'https://evil.test')).status).toBe(403))
+test('rejects cross-origin and non-JSON requests', async () => {
+  expect((await send(valid, 'https://evil.test')).status).toBe(403)
+  expect((await send(valid, undefined, 'text/plain')).status).toBe(415)
+  expect(stored).not.toHaveBeenCalled()
+})
 test('rejects oversized request', async () =>
   expect((await send({ ...valid, goal: 'x'.repeat(13000) })).status).toBe(413))
 test('rejects honeypot and rushed submissions', async () => {
   expect((await send({ ...valid, companyFax: 'bot' })).status).toBe(400)
   expect((await send({ ...valid, startedAt: Date.now() })).status).toBe(400)
 })
-test('rejects missing consent server-side', async () =>
-  expect((await send({ ...valid, consent: false })).status).toBe(400))
-test('fails closed without receiver configuration', async () => {
+test('rejects consent and invalid idempotency references', async () => {
+  expect((await send({ ...valid, consent: false })).status).toBe(400)
+  expect((await send({ ...valid, requestId: 'bad' })).status).toBe(400)
+})
+test('fails closed without enabled persistence', async () => {
   const r = await send(valid)
   expect(r.status).toBe(503)
   expect((await r.json()).message).toContain('Nothing has been saved')
+  expect(stored).not.toHaveBeenCalled()
 })
-test('acknowledges only confirmed durable storage', async () => {
-  process.env.LEAD_INTAKE_URL = 'https://receiver.example.test'
-  process.env.LEAD_INTAKE_TOKEN = 'test-only'
-  const mock = jest
-    .spyOn(global, 'fetch')
-    .mockImplementation(async (_url, init) => {
-      const body = JSON.parse(String(init?.body))
-      return new Response(JSON.stringify({ stored: true, id: body.id }))
-    })
-  const r = await send(valid, undefined, {
-    'x-vercel-forwarded-for': '192.0.2.2',
+test('storage acknowledgment required before receipt', async () => {
+  process.env.LEAD_INTAKE_ENABLED = 'true'
+  stored.mockResolvedValue({
+    id: valid.requestId,
+    limited: false,
+    duplicate: false,
   })
+  const r = await send(valid)
   expect(r.status).toBe(201)
-  expect(mock).toHaveBeenCalledTimes(1)
-  mock.mockRestore()
+  expect((await r.json()).id).toBe(valid.requestId)
 })
-test('does not claim success on unconfirmed delivery', async () => {
-  process.env.LEAD_INTAKE_URL = 'https://receiver.example.test'
-  process.env.LEAD_INTAKE_TOKEN = 'test-only'
-  const mock = jest.spyOn(global, 'fetch').mockResolvedValue(new Response('{}'))
-  expect(
-    (await send(valid, undefined, { 'x-vercel-forwarded-for': '192.0.2.3' }))
-      .status
-  ).toBe(502)
-  mock.mockRestore()
+test('duplicate uses original receipt', async () => {
+  process.env.LEAD_INTAKE_ENABLED = 'true'
+  stored.mockResolvedValue({
+    id: valid.requestId,
+    limited: false,
+    duplicate: true,
+  })
+  expect((await send(valid)).status).toBe(200)
 })
-test('throttles repeated requests', async () => {
-  for (let i = 0; i < 5; i++)
-    await send(valid, undefined, { 'x-vercel-forwarded-for': '192.0.2.4' })
-  expect(
-    (await send(valid, undefined, { 'x-vercel-forwarded-for': '192.0.2.4' }))
-      .status
-  ).toBe(429)
+test('database rate limit returns retry guidance', async () => {
+  process.env.LEAD_INTAKE_ENABLED = 'true'
+  stored.mockResolvedValue({ id: null, limited: true, duplicate: false })
+  const r = await send(valid)
+  expect(r.status).toBe(429)
+  expect(r.headers.get('retry-after')).toBe('600')
+})
+test('storage failure never claims delivery', async () => {
+  process.env.LEAD_INTAKE_ENABLED = 'true'
+  stored.mockRejectedValue(new Error('offline'))
+  const r = await send(valid)
+  expect(r.status).toBe(503)
+  expect((await r.json()).message).toContain('same form')
 })

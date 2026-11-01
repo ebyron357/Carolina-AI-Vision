@@ -39,6 +39,19 @@ export default function Consulting() {
             <span className="number">{name}</span>
             <h2>{tag}</h2>
             <p>{body}</p>
+            <Link
+              className="text-link"
+              href={
+                name === 'AI Growth Blueprint'
+                  ? '/blueprint'
+                  : '/consulting/request'
+              }
+            >
+              {name === 'AI Growth Blueprint'
+                ? 'Explore your blueprint'
+                : 'Discuss this service'}{' '}
+              →
+            </Link>
           </article>
         ))}
       </div>

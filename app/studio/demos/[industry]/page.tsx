@@ -27,6 +27,26 @@ const concepts = {
     ],
   },
 }
+const descriptions: Record<string, string> = {
+  'Repairs & upkeep':
+    'Explain the repairs you handle, service area, and how customers can request an estimate before scheduling.',
+  'Seasonal maintenance':
+    'Outline preventive maintenance visits, what each visit includes, and how customers prepare.',
+  'Project planning':
+    'Help customers describe the project, priorities, and preferred timing for a scoped conversation.',
+  'Business planning':
+    'Make your approach and planning deliverables clear so prospective clients can assess fit.',
+  'Operational reviews':
+    'Show how a structured review identifies friction and leads to practical next steps.',
+  'Ongoing advisory':
+    'Explain recurring review meetings, responsibilities, and the scope of continuing support.',
+  'Seasonal kitchen':
+    'Create a readable place for a seasonal menu, dietary notes, and availability updates.',
+  'Coffee & conversation':
+    'Give visitors the essentials: what to expect, where to find you, and how to plan a visit.',
+  'Private gatherings':
+    'Explain gathering formats and the details needed to request an event discussion.',
+}
 export function generateStaticParams() {
   return Object.keys(concepts).map((industry) => ({ industry }))
 }
@@ -40,7 +60,7 @@ export default async function Demo({
   params: Promise<{ industry: string }>
 }) {
   const { industry } = await params
-  if (!(industry in concepts)) notFound()
+  if (!Object.hasOwn(concepts, industry)) notFound()
   const c = concepts[industry as keyof typeof concepts]
   return (
     <main id="main" className="wrap section">
@@ -67,10 +87,7 @@ export default async function Demo({
               <article className="service-card" key={s}>
                 <p>0{i + 1}</p>
                 <h3>{s}</h3>
-                <p>
-                  A dedicated space to explain this service, the customer’s next
-                  step, and what to expect.
-                </p>
+                <p>{descriptions[s]}</p>
               </article>
             ))}
           </div>

@@ -1,4 +1,6 @@
-# Carolina Local AI — verified audit and delivery evidence
+# Carolina Local AI — initial implementation audit
+
+> Historical record of the initial implementation. For the independent recheck, corrected findings and current activation requirements, see [PR2-REVIEW.md](PR2-REVIEW.md) and [INTEGRATIONS.md](INTEGRATIONS.md). Do not treat the test counts or old receiver description below as the current implementation.
 
 Date: 2026-11-01. Existing repository: ebyron357/Carolina-AI-Vision. Existing Vercel project: tradeiq/carolina-ai-vision. No duplicate project or repository created.
 

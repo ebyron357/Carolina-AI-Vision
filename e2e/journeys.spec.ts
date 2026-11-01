@@ -8,6 +8,10 @@ for (const width of [390, 768, 1280]) {
     for (const route of [
       '/',
       '/visibility',
+      '/contact',
+      '/blueprint',
+      '/studio/inquire',
+      '/studio/onboarding',
       '/studio',
       '/studio/quote',
       '/consulting',
@@ -100,7 +104,55 @@ test('SEO, security headers, fail-closed endpoint and native 404', async ({
       goal: 'E2E check',
       consent: true,
       startedAt: Date.now() - 5000,
+      requestId: 'b4364a1d-363d-4d12-bb60-4040dcfe03ea',
     },
   })
   expect(result.status()).toBe(503)
+})
+
+test('inherited industry slugs render not-found content, not runtime errors', async ({
+  page,
+}) => {
+  for (const slug of ['constructor', 'toString', '__proto__']) {
+    await page.goto('/studio/demos/' + slug)
+    await expect(
+      page.getByRole('heading', { name: 'Let’s get you back on track.' })
+    ).toBeVisible()
+  }
+})
+test('service discovery and studio options are selectable without audit', async ({
+  page,
+}) => {
+  await page.goto('/blueprint')
+  await expect(page.getByLabel('What can we help with?')).toHaveValue(
+    'blueprint'
+  )
+  await page.goto('/studio/quote')
+  await page.getByLabel('Project scope').selectOption('growth')
+  await page.getByLabel('CRM integration', { exact: true }).check()
+  await expect(
+    page.getByLabel('CRM integration', { exact: true })
+  ).toBeChecked()
+  await page.goto('/contact')
+  await expect(page.getByLabel('What can we help with?')).toHaveValue('contact')
+})
+test('light sections have dark keyboard focus indicators', async ({ page }) => {
+  await page.goto('/')
+  const link = page.locator('.light-section a')
+  await link.focus()
+  expect(await link.evaluate((el) => getComputedStyle(el).outlineColor)).toBe(
+    'rgb(16, 35, 60)'
+  )
+})
+
+test('preserved gallery theme controls remain operational', async ({
+  page,
+}) => {
+  await page.goto('/components')
+  await page.getByRole('button', { name: 'Toggle theme' }).click()
+  await page.getByRole('menuitem', { name: 'Dark', exact: true }).click()
+  await expect(page.locator('html')).toHaveClass(/dark/)
+  await page.getByRole('button', { name: 'Toggle theme' }).click()
+  await page.getByRole('menuitem', { name: 'Light', exact: true }).click()
+  await expect(page.locator('html')).not.toHaveClass(/dark/)
 })

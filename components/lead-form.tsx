@@ -1,14 +1,20 @@
 'use client'
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
-import { preliminaryFindings, type Journey } from '@/lib/leads'
+import { preliminaryFindings, type Journey, type Service } from '@/lib/leads'
 export function LeadForm({
   journey,
   enabled,
+  initialService,
 }: {
   journey: Journey
   enabled: boolean
+  initialService?: Service
 }) {
+  const requestId = useRef('')
+  const receipt = useRef<HTMLHeadingElement>(null)
+  const errorBox = useRef<HTMLParagraphElement>(null)
+  const pending = useRef(false)
   const [startedAt] = useState(() => Date.now())
   const [busy, setBusy] = useState(false),
     [error, setError] = useState(''),
@@ -16,8 +22,15 @@ export function LeadForm({
   const [findings, setFindings] = useState<
     ReturnType<typeof preliminaryFindings>
   >([])
+  useEffect(() => {
+    if (received) receipt.current?.focus()
+    else if (error) errorBox.current?.focus()
+  }, [received, error])
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    if (!enabled || pending.current) return
+    pending.current = true
+    if (!requestId.current) requestId.current = crypto.randomUUID()
     setError('')
     setBusy(true)
     const data = new FormData(event.currentTarget)
@@ -26,6 +39,8 @@ export function LeadForm({
       journey,
       consent: data.get('consent') === 'on',
       startedAt,
+      requestId: requestId.current,
+      upgrades: data.getAll('upgrades'),
     }
     try {
       const response = await fetch('/api/leads', {
@@ -38,12 +53,14 @@ export function LeadForm({
         setError(result.message || 'Unable to submit. Please try later.')
         return
       }
+      if (typeof result.id !== 'string') throw new Error('Unconfirmed receipt')
       setReceived(result.id)
     } catch {
       setError(
         'Connection interrupted. Delivery is unconfirmed. Please try again later.'
       )
     } finally {
+      pending.current = false
       setBusy(false)
     }
   }
@@ -51,23 +68,36 @@ export function LeadForm({
     return (
       <section className="lead-form" role="status">
         <p className="eyebrow">REQUEST RECEIVED</p>
-        <h2>Thank you. Your next step is in motion.</h2>
+        <h2 ref={receipt} tabIndex={-1} className="receipt-heading">
+          Thank you. Your request is stored.
+        </h2>
         <p>
-          We have received your{' '}
+          We have stored your{' '}
           {journey === 'website'
             ? 'website quote'
             : journey === 'consulting'
               ? 'consultation'
-              : 'visibility review'}{' '}
+              : journey === 'contact'
+                ? 'contact'
+                : 'visibility review'}{' '}
           request. This is not a booked appointment, purchase, or completed
           assessment.
         </p>
         <p>Reference: {received}</p>
+        <p>
+          Queued for human review. CRM delivery and an assigned appointment have
+          not been confirmed.
+        </p>
         <Link href="/">Back to home →</Link>
       </section>
     )
   return (
-    <form className="lead-form" onSubmit={submit}>
+    <form
+      className="lead-form"
+      onSubmit={submit}
+      onChange={() => setFindings([])}
+      aria-busy={busy}
+    >
       <h2>
         {journey === 'visibility'
           ? 'Your business, in focus.'
@@ -83,6 +113,45 @@ export function LeadForm({
             'The self-check below works locally without submitting your details.'}
         </p>
       )}
+      <div className="field">
+        <label htmlFor="service">What can we help with?</label>
+        <select
+          id="service"
+          name="service"
+          defaultValue={
+            initialService ||
+            (journey === 'visibility'
+              ? 'visibility'
+              : journey === 'website'
+                ? 'website-quote'
+                : journey === 'contact'
+                  ? 'contact'
+                  : 'automation')
+          }
+        >
+          {journey === 'visibility' && (
+            <option value="visibility">Free AI Visibility Check</option>
+          )}
+          {journey === 'website' && (
+            <>
+              <option value="website-inquiry">Website Studio inquiry</option>
+              <option value="website-quote">Website quote request</option>
+            </>
+          )}
+          {journey === 'consulting' && (
+            <>
+              <option value="blueprint">AI Growth Blueprint</option>
+              <option value="automation">
+                Business Growth Systems / automation
+              </option>
+              <option value="management">Ongoing Growth Management</option>
+            </>
+          )}
+          {journey === 'contact' && (
+            <option value="contact">General contact inquiry</option>
+          )}
+        </select>
+      </div>
       <div className="field">
         <label htmlFor="name">Your name (required)</label>
         <input
@@ -182,6 +251,42 @@ export function LeadForm({
           )}
         </>
       )}
+      {journey === 'website' && (
+        <>
+          <div className="field">
+            <label htmlFor="package">Project scope</label>
+            <select id="package" name="package">
+              <option value="unsure">Help me choose</option>
+              <option value="essential">Essential presence</option>
+              <option value="showcase">Service showcase</option>
+              <option value="growth">Growth-ready website</option>
+            </select>
+          </div>
+          <fieldset className="fieldset">
+            <legend>Options to discuss (optional)</legend>
+            {[
+              ['maintenance', 'Maintenance & updates'],
+              ['crm', 'CRM integration'],
+              ['automation', 'Follow-up automation'],
+              ['content', 'Content & service-page upgrades'],
+            ].map(([value, label]) => (
+              <label key={value}>
+                <input type="checkbox" name="upgrades" value={value} />
+                {label}
+              </label>
+            ))}
+          </fieldset>
+        </>
+      )}
+      <div className="field">
+        <label htmlFor="timeline">When are you looking to start?</label>
+        <select id="timeline" name="timeline">
+          <option value="unsure">Not sure yet</option>
+          <option value="soon">As soon as scope is agreed</option>
+          <option value="quarter">In the next few months</option>
+          <option value="exploring">Just exploring</option>
+        </select>
+      </div>
       <div className="field">
         <label htmlFor="goal">
           {journey === 'website'
@@ -222,7 +327,7 @@ export function LeadForm({
             : 'Request submission unavailable'}
       </button>
       {error && (
-        <p role="alert" className="form-status">
+        <p role="alert" ref={errorBox} tabIndex={-1} className="form-status">
           {error}
         </p>
       )}

@@ -4,6 +4,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     '',
     '/visibility',
+    '/contact',
+    '/blueprint',
+    '/studio/inquire',
+    '/studio/onboarding',
     '/studio',
     '/studio/quote',
     '/consulting',

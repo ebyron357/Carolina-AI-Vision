@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { validateLead } from '@/lib/leads'
-// Best-effort per-instance limiter, NOT a distributed abuse boundary.
-const attempts = new Map<string, { count: number; until: number }>()
+import { intakeEnabled, storeLead } from '@/lib/lead-storage'
 const reply = (message: string, status: number) =>
   NextResponse.json(
     { message },
@@ -44,59 +43,49 @@ export async function POST(request: NextRequest) {
     return reply('Please reload the form and try again.', 400)
   const { lead, error } = validateLead(value)
   if (!lead) return reply(error || 'Invalid submission.', 400)
-  const key =
-    request.headers.get('x-vercel-forwarded-for')?.split(',')[0]?.trim() ||
-    'local'
-  const now = Date.now()
-  for (const [k, v] of attempts) if (v.until < now) attempts.delete(k)
-  if (!attempts.has(key) && attempts.size >= 10000)
-    return reply('Too many attempts. Please try again later.', 429)
-  const entry = attempts.get(key) || { count: 0, until: now + 600000 }
-  entry.count++
-  attempts.set(key, entry)
-  if (entry.count > 5 || attempts.size > 10000)
-    return reply('Too many attempts. Please try again later.', 429)
-  const endpoint = process.env.LEAD_INTAKE_URL,
-    token = process.env.LEAD_INTAKE_TOKEN
-  if (!endpoint || !token)
+  const requestId = value.requestId
+  if (
+    typeof requestId !== 'string' ||
+    !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+      requestId
+    )
+  )
+    return reply('Reload the form before submitting.', 400)
+  if (!intakeEnabled())
     return reply(
       'Requests are not being accepted yet. Nothing has been saved or sent. Please return when intake is available.',
       503
     )
+  const ip =
+    request.headers.get('x-vercel-forwarded-for')?.split(',')[0]?.trim() ||
+    'local'
   try {
-    const url = new URL(endpoint)
-    if (url.protocol !== 'https:' || url.username || url.password)
-      throw new Error('Invalid configuration')
-    const id = crypto.randomUUID()
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        id,
-        ...lead,
-        consentedAt: new Date().toISOString(),
-        privacyVersion: '2026-11-01',
-      }),
-      signal: AbortSignal.timeout(8000),
-      redirect: 'error',
-      cache: 'no-store',
-    })
-    // Receiver must acknowledge durable storage, not merely accept an HTTP request.
-    if (!response.ok) throw new Error('Delivery failed')
-    const ack = await response.json()
-    if (ack.stored !== true || ack.id !== id)
-      throw new Error('Storage unconfirmed')
+    const stored = await storeLead(lead, requestId, ip)
+    if (stored.limited)
+      return NextResponse.json(
+        { message: 'Too many attempts. Please try again later.' },
+        {
+          status: 429,
+          headers: { 'Cache-Control': 'no-store', 'Retry-After': '600' },
+        }
+      )
+    if (!stored.id) throw new Error('Storage unconfirmed')
     return NextResponse.json(
-      { message: 'Your request has been received.', id },
-      { status: 201, headers: { 'Cache-Control': 'no-store' } }
+      {
+        message:
+          'Your request has been stored for review. CRM delivery is not yet configured.',
+        id: stored.id,
+        duplicate: stored.duplicate,
+      },
+      {
+        status: stored.duplicate ? 200 : 201,
+        headers: { 'Cache-Control': 'no-store' },
+      }
     )
   } catch {
     return reply(
-      'We could not confirm delivery. Please try again later. A retry may create a duplicate request.',
-      502
+      'We could not confirm storage. Retry with this same form to avoid duplicate requests.',
+      503
     )
   }
 }
