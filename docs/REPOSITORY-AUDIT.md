@@ -1,41 +1,50 @@
-# Carolina AI Vision — Repository Audit
-**Date:** 2026-11-01  
-**Repository:** [ebyron357/Carolina-AI-Vision](https://github.com/ebyron357/Carolina-AI-Vision)  
-**Method:** Connected GitHub static file inspection. No install, build, automated checks, browser testing, deployment inspection, or payment/CRM validation was executed.
+# Carolina Local AI — initial implementation audit
 
-## Executive assessment
-**Result: not launch-ready; branded product is not yet implemented.** The repository provides a useful modern Next.js foundation but currently serves an upstream developer starter. This is a product completeness finding, not evidence that the starter is defective.
+> Historical record of the initial implementation. For the independent recheck, corrected findings and current activation requirements, see [PR2-REVIEW.md](PR2-REVIEW.md) and [INTEGRATIONS.md](INTEGRATIONS.md). Do not treat the test counts or old receiver description below as the current implementation.
 
-## Confirmed findings
+Date: 2026-11-01. Existing repository: ebyron357/Carolina-AI-Vision. Existing Vercel project: tradeiq/carolina-ai-vision. No duplicate project or repository created.
 
-| ID | Priority | Finding and evidence | Required action |
-| --- | --- | --- | --- |
-| F01 | Critical | `app/page.tsx` displays "Next.js + Tailwind CSS + shadcn/ui Starter" and links to upstream starter source/deployment. | Replace with Carolina AI Vision conversion-oriented homepage and verified offer copy. |
-| F02 | High | `constants/site-config.ts` contains starter title, keywords and canonical base URL `https://next-shadcn-starter-template.vercel.app/`; `app/layout.tsx` uses these to generate metadata. | Set truthful Carolina AI Vision metadata and the *verified* production domain before launch. Do not guess canonical URL. |
-| F03 | High | Prior `README.md` described Next.js 14, whereas `package.json` declares Next.js ^16.2.10 and React ^19; `AGENTS.md` documents Next.js 16. | Replace README with version-accurate documentation; align future changes to actual code. |
-| F04 | High | No audited implementation was located at `app/contact/page.tsx` or `app/api`; inspected home has no lead form, purchase link, audit flow, or consulting booking. | Build contact/snapshot server-side intake, audit offer and checkout integration; verify before claiming live. |
-| F05 | High | `jest.config.js` requires `ts-jest` and `identity-obj-proxy` but neither is listed in the inspected `package.json`. Jest's alias points `@/` to `src/`, while `tsconfig.json` points it to repository root. | Reconcile Jest dependencies/transform and alias, execute test suite. |
-| F06 | High | `proxy.ts` is pass-through with empty matcher. This is **not** an authentication or security boundary as configured. | Design server-side validation, abuse protection, data minimization, secret management, and appropriate security headers for actual features. |
-| F07 | Medium | `app/components/page.tsx` publicly exposes a component gallery linked from home; demo caching is documented in `AGENTS.md`. | Keep demos internal or remove from customer navigation before production. |
-| F08 | Medium | `app/layout.tsx` includes `@vercel/analytics` component. Actual deployment, collection and applicable consent are not verified. | Validate data handling, privacy disclosures, analytics consent needs, and live instrumentation. |
-| F09 | Medium | `components.json` points to `app/globals.css`, but root layout imports `styles/globals.css`; inspected `styles/globals.css` exists. | Correct shadcn CSS path if generator workflows rely on it. |
-| F10 | Medium | `README.md` previously claimed an MIT license and pointed to `LICENSE`, but the requested `LICENSE` fetch returned 404. | Confirm upstream licensing and add the appropriate license with attribution after verification; do not assume license terms. |
-| F11 | Medium | No .github/workflows/ci.yml was accessible in the inspected paths; workflow directory fetch did not resolve. | Establish and verify automated lint, type, test, build, security/dependency checks. |
-| F12 | High | Free Snapshot, $197 Audit, Services, Consulting, Contact, Privacy, and Terms are planned requirements, not verified working pages. | Implement each feature and validate evidence-based acceptance criteria before selling or publishing. |
+## Baseline: VERIFIED
 
-## Source files directly inspected
-`README.md`, `AGENTS.md`, `CLAUDE.md`, `package.json`, `app/page.tsx`, `app/layout.tsx`, `app/components/page.tsx`, `app/not-found.tsx`, `app/demo/cache/actions.ts`, `constants/site-config.ts`, `next.config.ts`, `proxy.ts`, `tsconfig.json`, `components.json`, `jest.config.js`, `jest.setup.js`, `styles/globals.css`, `.gitignore`, and a portion of `pnpm-lock.yaml`. Targeted missing-path checks do not prove a function is absent elsewhere.
+- Cloned `main` at `c548e06b7672ac380ab8b4e72f44028e19551d57`; no open PRs at inspection.
+- Read root AGENTS.md, CLAUDE.md, README, existing audit/plan, actual routes, configuration, lockfile, components and scripts. No nested agent instructions discovered.
+- Public home was the upstream starter, with component gallery and cache demo routes, upstream metadata, no business journeys, no database, and no intake backend.
+- Declared Next.js 16.2.10 / React 19 / TypeScript / Tailwind 4, pnpm lockfile. Jest referenced absent ts-jest and identity-obj-proxy and the wrong alias. Executed baseline Jest failed on missing ts-jest.
+- Vercel inspection confirmed the existing production deployment was READY, root `.`, Next.js framework, Node 26.x, and production alias `https://carolina-ai-vision.vercel.app`. No environment variables were present. Production was not changed.
+- Replit reference text at `https://carolina-ai-vision.replit.app/` was accessible: Carolina Local AI branding, veteran-owned/NC positioning, AI visibility content, simulated preview explicitly labeled, and older audit-first funnel. This implementation follows the owner's newer offer direction instead. Replit source, rendered reference appearance, private assets, backend behavior, and integration internals were not verified.
+- Initial production dependency audit reported advisories affecting Next and transitive packages. Updated Next/eslint-config-next to 16.4.3, PostCSS, and vulnerable transitive lock entries via pnpm. Removed obsolete experimental View Transitions configuration and incompatible explicit runtime segment config based on installed framework types/build evidence. Retained Cache Components with migration-compatible Partial Prefetching disabled.
 
-## Not verified
-Full dependency/security scan, GitHub Actions runs, local or remote build, browser rendering, responsiveness, accessibility tests, PageSpeed/Core Web Vitals, OWASP assessment, analytics operation, SEO indexing, actual content and business credentials, vendor integrations, checkout, lead delivery, consent compliance, full file tree, deployment state, and legal policies. **Do not translate an unchecked item into a passing or failing test.**
+## Implementation: VERIFIED in source and local checks
 
-## Release gates
-1. Brand and metadata corrected; legal business identity and canonical URL confirmed.
-2. Free Snapshot and contact submissions validated server-side; spam handling, consent and privacy reviewed.
-3. $197 Audit offer has explicit scope and fulfillment, correct checkout and webhook validation, test payment/refund paths.
-4. All navigation destinations, consultation handoff, disclosure pages, SEO and accessibility tested.
-5. CI passes lint, TypeScript, tests and build; dependencies and secrets reviewed.
-6. Desktop/mobile UX, keyboard/reduced-motion and performance tested against a real deployment.
-7. Owner reviews staging evidence and explicitly authorizes production launch.
+- Navy/blue/orange public design; no stock AI imagery, fabricated testimonials, customer logos, results, or public proposed prices.
+- Homepage, visibility self-check, Website Studio, three fictional industry concepts, package scope comparison, quote request, consulting discovery/request, About, privacy/terms review drafts, branded 404, metadata, sitemap, robots.
+- Old paid-audit-first requirement removed from governing docs. Website requests never require an audit. All five requested offer categories represented; no payments activated.
+- Native accessible mobile navigation, skip link, semantic labels, keyboard focus, reduced-motion CSS, responsive layouts.
+- Server validation, origin/content-type/body bounds, consent, honeypot, form-age checks, best-effort per-instance throttling, no user-URL fetching, and confirmed-storage-only success acknowledgment.
+- With no receiver configured, UI clearly disables submission and endpoint returns 503 rather than pretending to save a lead. Self-check findings identify only supplied answers as evidence and never claim independent scanning.
+- ClientVerse evaluated as an internal integration: BLOCKED by absent API contract/test tenant/authorized configuration; no integration activated or privileged system exposed.
+- Analytics remains opt-in and disabled in the inspected configuration. Security headers include CSP, HSTS, frame denial, nosniff, permissions and referrer policies. CSP allows inline Next.js scripts/styles; nonce-based strict CSP is not implemented.
+- Existing starter gallery/cache source preserved and unlinked/noindex. No license terms invented; upstream licensing remains a review item.
 
-**Disposition:** Documentation is ready for review; website code and live launch readiness remain open.
+## Executed test evidence
+
+- `pnpm install --frozen-lockfile`: passed against baseline lockfile.
+- `pnpm lint`: passed.
+- `pnpm typegen` and `pnpm exec tsc --noEmit`: passed after correcting test matcher types and framework configuration.
+- `pnpm test --runInBand --watch=false`: 3 suites, 28 tests passed. Covers input safety, self-reported evidence, unconfigured UI, origin/body/consent/spam controls, receiver-confirmed success, uncertain delivery and throttling. Receiver integration tests use mocks, not a real CRM.
+- `pnpm build`: passed; public/static routes and dynamic intake generated successfully.
+- `pnpm test:e2e`: 6 Chromium tests passed against local production build. Checked 12 public routes at 390, 768, 1280 widths for horizontal overflow and automated axe WCAG A/AA rules; keyboard skip link, mobile navigation, self-check, demo accordion, direct quote journey, native 404, sitemap, security headers, and unconfigured endpoint behavior.
+- `pnpm audit --prod`: zero known vulnerabilities after updates. This does not prove absence of vulnerabilities; development dependencies are outside this audit scope.
+- Final font-bundled homepage Lighthouse mobile lab run (local production build): performance 96, accessibility 100, best practices 100, SEO 100; LCP 0.8 s, CLS 0.016, TBT 240 ms. Earlier overlapping run: performance 89. These are lab measurements, not field Core Web Vitals; INP remains unverified.
+- Existing peer warning: eslint-plugin-tailwindcss 3.18.0 wants Tailwind 3 while starter uses Tailwind 4; plugin is not part of active flat ESLint configuration. No lint/build failure observed.
+- CI workflow prepared and delivered separately: the publishing integration cannot publish `.github/workflows/ci.yml` (HTTP 403). The PR excludes it. Hosted Actions execution remains unverified.
+
+## UNVERIFIED
+
+Full WCAG 2.2 AA conformance, assistive-technology testing, real devices/Safari/Firefox, field Core Web Vitals (LCP/INP/CLS), real analytics events, live email/CRM persistence or notifications, owner-approved original brand assets, legal sufficiency, and independent AI/search findings. Automated accessibility is not screen-reader certification. Bundled Inter Variable removes external Google-font dependencies from the public layout and avoids inconsistent system-font fallback seen during preview verification.
+
+## BLOCKED / production verdict
+
+**Not production-ready.** Durable lead storage and real delivery require owner-approved provider/CRM access and contract; privacy contact, retention/deletion/access policies and legal review remain open. Distributed abuse controls, verified receiver behavior/deduplication, independent visibility research, manual accessibility/performance checks, commercial cost validation and owner approval remain release gates. See INTEGRATIONS.md and IMPLEMENTATION-PLAN.md.
+
+Preview/PR links and deployed browser verification are recorded in the review PR and final delivery report, not presumed by this local audit. No production release, purchase, or payment activation authorized or performed.

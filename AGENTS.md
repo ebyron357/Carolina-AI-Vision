@@ -5,33 +5,33 @@ contributors should read it too. Keep it in sync when architecture changes.
 
 ## Stack
 
-| Layer      | Choice                                             |
-| ---------- | -------------------------------------------------- |
-| Framework  | Next.js 16 (App Router, Turbopack default)         |
-| Runtime    | React 19                                           |
-| Language   | TypeScript 5 (`target` ES2022, strict)             |
-| Styling    | Tailwind CSS v4 + shadcn/ui (Radix primitives)     |
-| Bundler    | Turbopack (default for `next dev` **and** `build`) |
-| Node       | >= 20.9.0 (see `package.json` `engines`)           |
-| Database / Auth | none (UI starter — add your own)              |
+| Layer           | Choice                                               |
+| --------------- | ---------------------------------------------------- |
+| Framework       | Next.js 16 (App Router, Turbopack default)           |
+| Runtime         | React 19                                             |
+| Language        | TypeScript 5 (`target` ES2022, strict)               |
+| Styling         | Tailwind CSS v4 + shadcn/ui (Radix primitives)       |
+| Bundler         | Turbopack (default for `next dev` **and** `build`)   |
+| Node            | >= 20.9.0 (see `package.json` `engines`)             |
+| Database / Auth | PostgreSQL adapter; live DB approval/config required |
 
 ## Commands (pnpm)
 
-| Command         | Purpose                                            |
-| --------------- | -------------------------------------------------- |
-| `pnpm dev`      | Dev server (Turbopack)                             |
-| `pnpm build`    | Production build (Turbopack). Fallback: `next build --webpack` |
-| `pnpm start`    | Serve the production build                          |
-| `pnpm typegen`  | `next typegen` — generate `PageProps`/`LayoutProps` |
-| `pnpm lint`     | ESLint (flat config, `eslint.config.mjs`)          |
-| `pnpm test`     | Jest + Testing Library                             |
-| `pnpm format`   | Prettier                                           |
+| Command        | Purpose                                                        |
+| -------------- | -------------------------------------------------------------- |
+| `pnpm dev`     | Dev server (Turbopack)                                         |
+| `pnpm build`   | Production build (Turbopack). Fallback: `next build --webpack` |
+| `pnpm start`   | Serve the production build                                     |
+| `pnpm typegen` | `next typegen` — generate `PageProps`/`LayoutProps`            |
+| `pnpm lint`    | ESLint (flat config, `eslint.config.mjs`)                      |
+| `pnpm test`    | Jest + Testing Library                                         |
+| `pnpm format`  | Prettier                                                       |
 
 ## Routing structure
 
 ```
 app/
-  layout.tsx              Root layout (metadata, ThemeProvider, fonts)
+  layout.tsx              Root layout (metadata, public navigation, opt-in analytics)
   page.tsx                Home
   components/page.tsx      Component gallery
   demo/cache/             Cache Components reference implementation
@@ -67,10 +67,10 @@ Cache Components is enabled via `cacheComponents: true` in `next.config.ts`
 
 ### Invalidation — pick the right one
 
-| API                              | Semantics                                   |
-| -------------------------------- | ------------------------------------------- |
-| `updateTag('<tag>')`             | **Read-your-writes** — expire + recompute in the current request. Use in Server Actions after a mutation. |
-| `revalidateTag('<tag>', '<profile>')` | Eventual invalidation. **Two args required in Next 16** (tag + profile). |
+| API                                   | Semantics                                                                                                 |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `updateTag('<tag>')`                  | **Read-your-writes** — expire + recompute in the current request. Use in Server Actions after a mutation. |
+| `revalidateTag('<tag>', '<profile>')` | Eventual invalidation. **Two args required in Next 16** (tag + profile).                                  |
 
 Canonical example: [app/demo/cache/](app/demo/cache/).
 
@@ -79,36 +79,40 @@ Canonical example: [app/demo/cache/](app/demo/cache/).
 `proxy.ts` (root) replaces `middleware.ts`. Add auth/redirects/rewrites there
 and scope with `config.matcher` (empty by default = runs on nothing).
 
-## View Transitions
-
-Native React 19 View Transitions are enabled via `experimental.viewTransition`
-in `next.config.ts`. Trigger per-navigation types with the `<Link>`
-`transitionTypes` prop, e.g. `<Link href="/x" transitionTypes={['slide']}>`.
-
 ## Conventions
 
 - Path alias: `@/*` → repo root.
 - Types via `type` (not `interface`) — enforced by ESLint.
 - No `console` / no `any` (ESLint errors).
 
-## Carolina AI Vision product directive (2026-11-01)
+## Carolina Local AI product directive (2026-11-01)
 
-This repository is being converted from an upstream UI starter into the **Carolina AI Vision** business website. The product goal is qualified lead generation and ethical conversion through a Free AI Visibility Snapshot, a **$197 AI Visibility Audit**, and continuing AI consulting, local SEO, website optimization and automation. **These offers are not implemented merely because they appear in this document.**
+The public brand is **Carolina Local AI**, an independent veteran-owned North Carolina digital growth brand, separate from ClientVerse. Preserve this repository and Vercel project. Primary message: **Get Found. Get Customers. Grow Smarter.**
 
-### Canonical documents and decision boundaries
+The owner's current request supersedes the old audit-first funnel. Offers: Free AI Visibility Check, AI Growth Blueprint, Website Studio, Business Growth Systems, Ongoing Growth Management. Proposed prices are private and pending owner approval and cost validation; do not include them in public UI or repository documentation. Website projects never require an audit purchase. No payments may be activated without approval.
 
-- [README.md](README.md): full product overview, verified technical setup, release precautions and current feature status.
-- [docs/REPOSITORY-AUDIT.md](docs/REPOSITORY-AUDIT.md): dated inspection evidence, findings, limitations and launch risks.
-- [docs/IMPLEMENTATION-PLAN.md](docs/IMPLEMENTATION-PLAN.md): implementation order and acceptance criteria.
-- Keep technical stack and framework rules here; keep product-level scope in README and the plan, rather than duplicating large instructions.
-- When policy changes, update affected governing documents as **complete replacements** and ensure they remain consistent.
-- Do not silently change the chosen Next.js starter, wipe existing work, introduce a new vendor, or claim unverified integrations. Use reviewable PRs before release.
+### Implemented routes and boundaries
 
-### Coding and security expectations
+- `/visibility`: local self-reported preliminary check and guarded human-review intake.
+- `/studio`, `/studio/demos/[industry]`, `/studio/quote`: concept demos, scope comparison, guarded quote request.
+- `/consulting`, `/consulting/request`: service discovery and guarded consultation request.
+- `/contact`, `/blueprint`, `/studio/inquire`, `/studio/onboarding`: service-specific inquiry and website planning intake.
+- `/about`, `/privacy`, `/terms`: positioning and review-draft disclosures.
+- `/api/leads`: validated PostgreSQL intake, gated by explicit enablement and approved server configuration. `db/001_lead_intake.sql` must be applied by an authorized operator, never automatically. No database provisioned or real CRM integration activated.
+- Starter gallery/cache examples remain preserved, unlinked and noindex. They are not business features.
 
-- Preserve `app/`-based alias `@/*` as mapped by `tsconfig.json`; check Jest's incorrect `src/` mapping before relying on tests.
-- Existing `proxy.ts` has an empty matcher; **it supplies no active authorization mechanism**. Any sensitive workflow needs explicit server-side authorization, validation, abuse controls, secrets protection, and privacy-by-design.
-- Require accessible, responsive, reduced-motion friendly UI, semantically labeled inputs, keyboard access, informative errors and honest content.
-- Treat lead intake, payment, booking, analytics, CRM, audit engines and deployment as unverified until real checks demonstrate functionality.
-- Do not insert testimonials, logos, compliance certifications, sample metrics or AI audit results that are not supported by evidence.
-- Report actual command executions and test outputs. A command written in documentation is not a passing test.
+### Security and evidence
+
+Never fabricate findings, testimonials, rankings, client logos, scans, or successful delivery. Preliminary evidence comes only from answers and must be labeled accordingly. No URL supplied by a user is fetched by the assessment. Never expose credentials. Intake must confirm durable storage before success. Rate limiting and deduplication are transactional in PostgreSQL when configured; local embedded PostgreSQL tests are not remote activation. CRM outbox remains pending configuration until a real API contract is available. Owner-approved privacy contact, retention, receiver security, and deletion controls are launch gates.
+
+### Checks and release
+
+Use pnpm. Jest now uses `next/jest`, root aliases, and `__tests__/`; browser tests use Playwright and axe in `e2e/`. Run lint, typegen, tsc, Jest, `pnpm test:integration`, build, `pnpm test:e2e`, `pnpm security:source`, and both full/production dependency audits. Do not infer WCAG conformance or Core Web Vitals from automated checks alone. Metadata uses the verified Vercel production alias, previews are noindex, analytics stays disabled unless explicitly configured. Work in a branch, publish a reviewable PR and preview, never merge or promote production without approval.
+
+See README and docs for the verified audit, acceptance status, and integration contract.
+
+## Phase 3 operational boundaries
+
+Read `docs/RELEASE-OPERATIONS.md` before database/worker work. Migrations 001/002 are operator-only with checksum history, transactional application and dedicated trusted owner. After 002, web/worker/operator identities use NOLOGIN group grants and EXECUTE-only definer functions, not direct table grants. Never give public runtime credentials migration ownership. `/api/health` is generic liveness; `/api/ready` is generic intake readiness only.
+
+The CRM transport port and local fixtures are **not** the verified ClientVerse API contract. No endpoint/auth is invented. A reviewed local adapter, approved tenant/service identity and operator release are required before private one-job worker execution. No cron/public dispatch endpoint is active. Preserve error-code-only logging, lease tokens, stable idempotency and tenant checks. Privacy operations require explicit operator approval; no automatic retention schedule or unauthenticated deletion API.
