@@ -218,7 +218,7 @@ export function LeadForm({
         {busy
           ? 'Sending…'
           : enabled
-            ? 'Send my request ↗︎'
+            ? 'Send my request →'
             : 'Request submission unavailable'}
       </button>
       {error && (

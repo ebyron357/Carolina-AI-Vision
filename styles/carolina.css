@@ -471,7 +471,8 @@ li {
   letter-spacing: 0.17em;
 }
 .demo-art strong {
-  font-size: 35px;
+  font-size: clamp(1.5rem, 3.2vw, 2.2rem);
+  overflow-wrap: anywhere;
   line-height: 1.1;
   letter-spacing: -0.04em;
   max-width: 220px;

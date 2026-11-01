@@ -25,7 +25,7 @@ export default function Home() {
           </p>
           <div className="actions">
             <Link className="button" href="/visibility">
-              Get my free visibility check <span aria-hidden="true">↗︎</span>
+              Get my free visibility check <span aria-hidden="true">→</span>
             </Link>
             <Link className="button secondary" href="/studio">
               Explore Website Studio
@@ -54,7 +54,7 @@ export default function Home() {
               <h2>Be the clear choice</h2>
               <p>Search-ready content. A credible presence.</p>
             </div>
-            <b aria-hidden="true">↗︎</b>
+            <b aria-hidden="true">→</b>
           </div>
           <div className="path-row">
             <span>02</span>
@@ -62,7 +62,7 @@ export default function Home() {
               <h2>Turn interest into action</h2>
               <p>Useful websites. One obvious next step.</p>
             </div>
-            <b aria-hidden="true">↗︎</b>
+            <b aria-hidden="true">→</b>
           </div>
           <div className="path-row">
             <span>03</span>
@@ -70,7 +70,7 @@ export default function Home() {
               <h2>Keep the conversation going</h2>
               <p>Thoughtful follow-up. Less busywork.</p>
             </div>
-            <b aria-hidden="true">↗︎</b>
+            <b aria-hidden="true">→</b>
           </div>
           <div className="visual-bottom">
             HUMAN STRATEGY. PRACTICAL AI.<span aria-hidden="true">+</span>
@@ -114,7 +114,7 @@ export default function Home() {
               <li>Human review, not a made-up score</li>
             </ul>
             <Link className="text-link" href="/visibility">
-              Start your free check ↗︎
+              Start your free check →
             </Link>
           </article>
           <article className="service-card featured">
@@ -134,7 +134,7 @@ export default function Home() {
               <li>No paid audit prerequisite</li>
             </ul>
             <Link className="text-link" href="/studio">
-              Step inside Website Studio ↗︎
+              Step inside Website Studio →
             </Link>
           </article>
           <article className="service-card">
@@ -154,7 +154,7 @@ export default function Home() {
               <li>Ongoing Growth Management</li>
             </ul>
             <Link className="text-link" href="/consulting">
-              Find your next improvement ↗︎
+              Find your next improvement →
             </Link>
           </article>
         </div>
@@ -182,7 +182,7 @@ export default function Home() {
               website.
             </p>
             <Link className="text-link" href="/about">
-              Meet the approach ↗︎
+              Meet the approach →
             </Link>
           </div>
         </div>
@@ -195,7 +195,7 @@ export default function Home() {
           Not with the technology.
         </h2>
         <Link className="button" href="/consulting">
-          Let’s talk about your goals ↗︎
+          Let’s talk about your goals →
         </Link>
       </section>
     </main>

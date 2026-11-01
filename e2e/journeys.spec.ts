@@ -27,6 +27,11 @@ for (const width of [390, 768, 1280]) {
           () => document.documentElement.scrollWidth <= window.innerWidth
         )
       ).toBe(true)
+      for (const title of await page.locator('.demo-art strong').all()) {
+        expect(
+          await title.evaluate((el) => el.scrollWidth <= el.clientWidth)
+        ).toBe(true)
+      }
       const results = await new AxeBuilder({ page })
         .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
         .analyze()
