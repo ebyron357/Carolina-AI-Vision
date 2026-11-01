@@ -67,7 +67,7 @@ export default function Consulting() {
             <li>What data should never enter an AI workflow</li>
           </ul>
           <Link className="button" href="/consulting/request">
-            Request a consultation ↗
+            Request a consultation ↗︎
           </Link>
         </div>
       </section>

@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 const links = [
   ['/visibility', 'Free visibility check'],
   ['/studio', 'Website Studio'],
@@ -15,9 +16,7 @@ export function Header() {
       </a>
       <header className="site-header">
         <Link className="brand" href="/" aria-label="Carolina Local AI home">
-          <span className="brand-mark" aria-hidden="true">
-            C<span>↗</span>
-          </span>
+          <Image src="/logo/carolina.svg" alt="" width={44} height={44} />
           <span>
             CAROLINA <b>LOCAL AI</b>
             <small>LOCAL ROOTS. SMARTER GROWTH.</small>

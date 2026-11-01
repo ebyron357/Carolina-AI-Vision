@@ -53,7 +53,7 @@ export default function Studio() {
             <div className="demo-art">
               <span>{n} / INDUSTRY CONCEPT</span>
               <strong>{title}</strong>
-              <i aria-hidden="true">↗</i>
+              <i aria-hidden="true">↗︎</i>
             </div>
             <h3>{copy}</h3>
             <p>Explore interactive design concept →</p>
@@ -99,7 +99,7 @@ export default function Studio() {
                 Quote after scope review. No published package pricing.
               </p>
               <Link className="text-link" href="/studio/quote">
-                Request this scope ↗
+                Request this scope ↗︎
               </Link>
             </article>
           ))}
@@ -112,7 +112,7 @@ export default function Studio() {
       </aside>
       <div className="actions">
         <Link className="button" href="/studio/quote">
-          Tell us about your website ↗
+          Tell us about your website ↗︎
         </Link>
       </div>
     </main>

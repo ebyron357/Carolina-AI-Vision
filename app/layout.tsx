@@ -1,3 +1,4 @@
+import '@fontsource-variable/inter'
 import '@/styles/globals.css'
 import '@/styles/carolina.css'
 import type { Metadata } from 'next'

@@ -57,7 +57,7 @@ export default async function Demo({
           <h1>{c.title}</h1>
           <p className="lede">{c.copy}</p>
           <Link className="button" href="/studio/quote">
-            Build a website like this ↗
+            Build a website like this ↗︎
           </Link>
         </section>
         <section className="section">
@@ -103,7 +103,7 @@ export default async function Demo({
           Back to Website Studio
         </Link>
         <Link className="button" href="/studio/quote">
-          Request my website quote ↗
+          Request my website quote ↗︎
         </Link>
       </div>
     </main>

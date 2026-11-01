@@ -33,13 +33,13 @@ Date: 2026-11-01. Existing repository: ebyron357/Carolina-AI-Vision. Existing Ve
 - `pnpm build`: passed; public/static routes and dynamic intake generated successfully.
 - `pnpm test:e2e`: 6 Chromium tests passed against local production build. Checked 12 public routes at 390, 768, 1280 widths for horizontal overflow and automated axe WCAG A/AA rules; keyboard skip link, mobile navigation, self-check, demo accordion, direct quote journey, native 404, sitemap, security headers, and unconfigured endpoint behavior.
 - `pnpm audit --prod`: zero known vulnerabilities after updates. This does not prove absence of vulnerabilities; development dependencies are outside this audit scope.
-- Lighthouse mobile lab run against the local production homepage: performance 89, accessibility 100, best practices 100, SEO 100; LCP 0.8s, CLS 0, TBT 450ms. This run overlapped the browser regression suite and is not field Core Web Vitals; INP remains unverified.
+- Final font-bundled homepage Lighthouse mobile lab run (local production build): performance 96, accessibility 100, best practices 100, SEO 100; LCP 0.8 s, CLS 0.016, TBT 240 ms. Earlier overlapping run: performance 89. These are lab measurements, not field Core Web Vitals; INP remains unverified.
 - Existing peer warning: eslint-plugin-tailwindcss 3.18.0 wants Tailwind 3 while starter uses Tailwind 4; plugin is not part of active flat ESLint configuration. No lint/build failure observed.
 - CI workflow prepared and delivered separately: the publishing integration cannot publish `.github/workflows/ci.yml` (HTTP 403). The PR excludes it. Hosted Actions execution remains unverified.
 
 ## UNVERIFIED
 
-Full WCAG 2.2 AA conformance, assistive-technology testing, real devices/Safari/Firefox, field Core Web Vitals (LCP/INP/CLS), real analytics events, live email/CRM persistence or notifications, owner-approved original brand assets, legal sufficiency, and independent AI/search findings. Automated accessibility is not screen-reader certification. System fonts remove external Google-font build/runtime dependencies from the public layout.
+Full WCAG 2.2 AA conformance, assistive-technology testing, real devices/Safari/Firefox, field Core Web Vitals (LCP/INP/CLS), real analytics events, live email/CRM persistence or notifications, owner-approved original brand assets, legal sufficiency, and independent AI/search findings. Automated accessibility is not screen-reader certification. Bundled Inter Variable removes external Google-font dependencies from the public layout and avoids inconsistent system-font fallback seen during preview verification.
 
 ## BLOCKED / production verdict
 
