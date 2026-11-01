@@ -90,3 +90,25 @@ in `next.config.ts`. Trigger per-navigation types with the `<Link>`
 - Path alias: `@/*` → repo root.
 - Types via `type` (not `interface`) — enforced by ESLint.
 - No `console` / no `any` (ESLint errors).
+
+## Carolina AI Vision product directive (2026-11-01)
+
+This repository is being converted from an upstream UI starter into the **Carolina AI Vision** business website. The product goal is qualified lead generation and ethical conversion through a Free AI Visibility Snapshot, a **$197 AI Visibility Audit**, and continuing AI consulting, local SEO, website optimization and automation. **These offers are not implemented merely because they appear in this document.**
+
+### Canonical documents and decision boundaries
+
+- [README.md](README.md): full product overview, verified technical setup, release precautions and current feature status.
+- [docs/REPOSITORY-AUDIT.md](docs/REPOSITORY-AUDIT.md): dated inspection evidence, findings, limitations and launch risks.
+- [docs/IMPLEMENTATION-PLAN.md](docs/IMPLEMENTATION-PLAN.md): implementation order and acceptance criteria.
+- Keep technical stack and framework rules here; keep product-level scope in README and the plan, rather than duplicating large instructions.
+- When policy changes, update affected governing documents as **complete replacements** and ensure they remain consistent.
+- Do not silently change the chosen Next.js starter, wipe existing work, introduce a new vendor, or claim unverified integrations. Use reviewable PRs before release.
+
+### Coding and security expectations
+
+- Preserve `app/`-based alias `@/*` as mapped by `tsconfig.json`; check Jest's incorrect `src/` mapping before relying on tests.
+- Existing `proxy.ts` has an empty matcher; **it supplies no active authorization mechanism**. Any sensitive workflow needs explicit server-side authorization, validation, abuse controls, secrets protection, and privacy-by-design.
+- Require accessible, responsive, reduced-motion friendly UI, semantically labeled inputs, keyboard access, informative errors and honest content.
+- Treat lead intake, payment, booking, analytics, CRM, audit engines and deployment as unverified until real checks demonstrate functionality.
+- Do not insert testimonials, logos, compliance certifications, sample metrics or AI audit results that are not supported by evidence.
+- Report actual command executions and test outputs. A command written in documentation is not a passing test.
