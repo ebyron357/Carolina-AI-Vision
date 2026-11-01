@@ -13,7 +13,7 @@ contributors should read it too. Keep it in sync when architecture changes.
 | Styling    | Tailwind CSS v4 + shadcn/ui (Radix primitives)     |
 | Bundler    | Turbopack (default for `next dev` **and** `build`) |
 | Node       | >= 20.9.0 (see `package.json` `engines`)           |
-| Database / Auth | none (UI starter — add your own)              |
+| Database / Auth | none; approved lead receiver required              |
 
 ## Commands (pnpm)
 
@@ -31,7 +31,7 @@ contributors should read it too. Keep it in sync when architecture changes.
 
 ```
 app/
-  layout.tsx              Root layout (metadata, ThemeProvider, fonts)
+  layout.tsx              Root layout (metadata, public navigation, opt-in analytics)
   page.tsx                Home
   components/page.tsx      Component gallery
   demo/cache/             Cache Components reference implementation
@@ -79,36 +79,30 @@ Canonical example: [app/demo/cache/](app/demo/cache/).
 `proxy.ts` (root) replaces `middleware.ts`. Add auth/redirects/rewrites there
 and scope with `config.matcher` (empty by default = runs on nothing).
 
-## View Transitions
-
-Native React 19 View Transitions are enabled via `experimental.viewTransition`
-in `next.config.ts`. Trigger per-navigation types with the `<Link>`
-`transitionTypes` prop, e.g. `<Link href="/x" transitionTypes={['slide']}>`.
-
 ## Conventions
 
 - Path alias: `@/*` → repo root.
 - Types via `type` (not `interface`) — enforced by ESLint.
 - No `console` / no `any` (ESLint errors).
 
-## Carolina AI Vision product directive (2026-11-01)
+## Carolina Local AI product directive (2026-11-01)
 
-This repository is being converted from an upstream UI starter into the **Carolina AI Vision** business website. The product goal is qualified lead generation and ethical conversion through a Free AI Visibility Snapshot, a **$197 AI Visibility Audit**, and continuing AI consulting, local SEO, website optimization and automation. **These offers are not implemented merely because they appear in this document.**
+The public brand is **Carolina Local AI**, an independent veteran-owned North Carolina digital growth brand, separate from ClientVerse. Preserve this repository and Vercel project. Primary message: **Get Found. Get Customers. Grow Smarter.**
 
-### Canonical documents and decision boundaries
+The owner's current request supersedes the old audit-first funnel. Offers: Free AI Visibility Check, AI Growth Blueprint, Website Studio, Business Growth Systems, Ongoing Growth Management. Proposed prices are private and pending owner approval and cost validation; do not include them in public UI or repository documentation. Website projects never require an audit purchase. No payments may be activated without approval.
 
-- [README.md](README.md): full product overview, verified technical setup, release precautions and current feature status.
-- [docs/REPOSITORY-AUDIT.md](docs/REPOSITORY-AUDIT.md): dated inspection evidence, findings, limitations and launch risks.
-- [docs/IMPLEMENTATION-PLAN.md](docs/IMPLEMENTATION-PLAN.md): implementation order and acceptance criteria.
-- Keep technical stack and framework rules here; keep product-level scope in README and the plan, rather than duplicating large instructions.
-- When policy changes, update affected governing documents as **complete replacements** and ensure they remain consistent.
-- Do not silently change the chosen Next.js starter, wipe existing work, introduce a new vendor, or claim unverified integrations. Use reviewable PRs before release.
+### Implemented routes and boundaries
+- `/visibility`: local self-reported preliminary check and guarded human-review intake.
+- `/studio`, `/studio/demos/[industry]`, `/studio/quote`: concept demos, scope comparison, guarded quote request.
+- `/consulting`, `/consulting/request`: service discovery and guarded consultation request.
+- `/about`, `/privacy`, `/terms`: positioning and review-draft disclosures.
+- `/api/leads`: validated intake. Disabled without an approved receiver. No database provisioned, no real CRM integration claimed.
+- Starter gallery/cache examples remain preserved, unlinked and noindex. They are not business features.
 
-### Coding and security expectations
+### Security and evidence
+Never fabricate findings, testimonials, rankings, client logos, scans, or successful delivery. Preliminary evidence comes only from answers and must be labeled accordingly. No URL supplied by a user is fetched by the assessment. Never expose credentials. Intake must confirm durable storage before success. Current per-instance throttling is only best effort, not a distributed abuse control. Owner-approved privacy contact, retention, receiver security, and deletion controls are launch gates.
 
-- Preserve `app/`-based alias `@/*` as mapped by `tsconfig.json`; check Jest's incorrect `src/` mapping before relying on tests.
-- Existing `proxy.ts` has an empty matcher; **it supplies no active authorization mechanism**. Any sensitive workflow needs explicit server-side authorization, validation, abuse controls, secrets protection, and privacy-by-design.
-- Require accessible, responsive, reduced-motion friendly UI, semantically labeled inputs, keyboard access, informative errors and honest content.
-- Treat lead intake, payment, booking, analytics, CRM, audit engines and deployment as unverified until real checks demonstrate functionality.
-- Do not insert testimonials, logos, compliance certifications, sample metrics or AI audit results that are not supported by evidence.
-- Report actual command executions and test outputs. A command written in documentation is not a passing test.
+### Checks and release
+Use pnpm. Jest now uses `next/jest`, root aliases, and `__tests__/`; browser tests use Playwright and axe in `e2e/`. Run lint, typegen, tsc, Jest, build, `pnpm test:e2e`, and dependency audit. Do not infer WCAG conformance or Core Web Vitals from automated checks alone. Metadata uses the verified Vercel production alias, previews are noindex, analytics stays disabled unless explicitly configured. Work in a branch, publish a reviewable PR and preview, never merge or promote production without approval.
+
+See README and docs for the verified audit, acceptance status, and integration contract.

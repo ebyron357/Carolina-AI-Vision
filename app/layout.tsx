@@ -1,58 +1,40 @@
 import '@/styles/globals.css'
+import '@/styles/carolina.css'
 import type { Metadata } from 'next'
 import { siteConfig } from '@/constants/site-config'
-import { fonts } from '@/lib/fonts'
+import { Header, Footer } from '@/components/site-shell'
 import { Analytics } from '@vercel/analytics/react'
-import { ThemeProvider } from '@/components/theme-provider'
-
-export const generateMetadata = (): Metadata => ({
+export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: siteConfig.title,
-    template: `%s | ${siteConfig.title}`,
+    default: 'Carolina Local AI | Get Found. Get Customers. Grow Smarter.',
+    template: '%s | Carolina Local AI',
   },
   description: siteConfig.description,
-  keywords: siteConfig.keywords,
-  robots: { index: true, follow: true },
-  icons: {
-    icon: '/logo/tab-icon.svg',
-    shortcut: '/logo/tab-icon.svg',
-    apple: '/logo/tab-icon.svg',
+  robots: {
+    index: process.env.VERCEL_ENV !== 'preview',
+    follow: process.env.VERCEL_ENV !== 'preview',
   },
+  icons: { icon: '/logo/carolina.svg' },
   openGraph: {
-    url: siteConfig.url,
     title: siteConfig.title,
     description: siteConfig.description,
-    siteName: siteConfig.title,
-    images: '/opengraph/opengraph-image.png',
     type: 'website',
-    locale: '',
+    locale: 'en_US',
   },
-  twitter: {
-    card: 'summary_large_image',
-    title: siteConfig.title,
-    description: siteConfig.description,
-    images: '/opengraph/opengraph-image.png',
-  },
-})
-
+}
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning className={fonts.join(' ')}>
+    <html lang="en">
       <body>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
-        <Analytics />
+        <Header />
+        {children}
+        <Footer />
+        {process.env.NEXT_PUBLIC_ENABLE_ANALYTICS === 'true' && <Analytics />}
       </body>
     </html>
   )
