@@ -14,7 +14,10 @@
     "lint:fix": "eslint --fix . && prettier --write .",
     "test:e2e": "playwright test",
     "test:integration": "tsx --test integration/*.test.ts",
-    "security:source": "node scripts/scan-source.mjs"
+    "security:source": "node scripts/scan-source.mjs",
+    "db:migrate": "tsx scripts/migrate-database.ts",
+    "db:operate": "tsx scripts/database-operations.ts",
+    "crm:work": "tsx scripts/outbox-worker.ts"
   },
   "engines": {
     "node": ">=20.9.0"

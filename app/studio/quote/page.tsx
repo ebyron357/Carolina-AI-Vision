@@ -7,11 +7,32 @@ export const metadata = {
   title: 'Website Quote Request',
   alternates: { canonical: '/studio/quote' },
 }
-async function Intake() {
+async function Intake({
+  searchParams,
+}: {
+  searchParams: Promise<{ package?: string }>
+}) {
   await connection()
-  return <LeadForm journey="website" enabled={intakeEnabled()} />
+  const { package: selected } = await searchParams
+  return (
+    <LeadForm
+      journey="website"
+      initialPackage={
+        selected === 'essential' ||
+        selected === 'showcase' ||
+        selected === 'growth'
+          ? selected
+          : undefined
+      }
+      enabled={intakeEnabled()}
+    />
+  )
 }
-export default function Page() {
+export default function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ package?: string }>
+}) {
   return (
     <main id="main" className="wrap section form-layout">
       <div>
@@ -41,7 +62,7 @@ export default function Page() {
         </aside>
       </div>
       <Suspense fallback={<p>Checking intake availability…</p>}>
-        <Intake />
+        <Intake searchParams={searchParams} />
       </Suspense>
     </main>
   )

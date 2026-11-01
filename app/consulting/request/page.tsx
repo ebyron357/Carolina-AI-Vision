@@ -7,11 +7,32 @@ export const metadata = {
   title: 'Consultation Request',
   alternates: { canonical: '/consulting/request' },
 }
-async function Intake() {
+async function Intake({
+  searchParams,
+}: {
+  searchParams: Promise<{ service?: string }>
+}) {
   await connection()
-  return <LeadForm journey="consulting" enabled={intakeEnabled()} />
+  const { service } = await searchParams
+  return (
+    <LeadForm
+      journey="consulting"
+      initialService={
+        service === 'management'
+          ? 'management'
+          : service === 'blueprint'
+            ? 'blueprint'
+            : 'automation'
+      }
+      enabled={intakeEnabled()}
+    />
+  )
 }
-export default function Page() {
+export default function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ service?: string }>
+}) {
   return (
     <main id="main" className="wrap section form-layout">
       <div>
@@ -40,7 +61,7 @@ export default function Page() {
         </aside>
       </div>
       <Suspense fallback={<p>Checking intake availability…</p>}>
-        <Intake />
+        <Intake searchParams={searchParams} />
       </Suspense>
     </main>
   )

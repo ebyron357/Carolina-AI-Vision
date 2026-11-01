@@ -37,6 +37,9 @@ beforeEach(() => {
 test('rejects cross-origin and non-JSON requests', async () => {
   expect((await send(valid, 'https://evil.test')).status).toBe(403)
   expect((await send(valid, undefined, 'text/plain')).status).toBe(415)
+  expect(
+    (await send(valid, undefined, 'application/json-invalid')).status
+  ).toBe(415)
   expect(stored).not.toHaveBeenCalled()
 })
 test('rejects oversized request', async () =>

@@ -110,3 +110,9 @@ Never fabricate findings, testimonials, rankings, client logos, scans, or succes
 Use pnpm. Jest now uses `next/jest`, root aliases, and `__tests__/`; browser tests use Playwright and axe in `e2e/`. Run lint, typegen, tsc, Jest, `pnpm test:integration`, build, `pnpm test:e2e`, `pnpm security:source`, and both full/production dependency audits. Do not infer WCAG conformance or Core Web Vitals from automated checks alone. Metadata uses the verified Vercel production alias, previews are noindex, analytics stays disabled unless explicitly configured. Work in a branch, publish a reviewable PR and preview, never merge or promote production without approval.
 
 See README and docs for the verified audit, acceptance status, and integration contract.
+
+## Phase 3 operational boundaries
+
+Read `docs/RELEASE-OPERATIONS.md` before database/worker work. Migrations 001/002 are operator-only with checksum history, transactional application and dedicated trusted owner. After 002, web/worker/operator identities use NOLOGIN group grants and EXECUTE-only definer functions, not direct table grants. Never give public runtime credentials migration ownership. `/api/health` is generic liveness; `/api/ready` is generic intake readiness only.
+
+The CRM transport port and local fixtures are **not** the verified ClientVerse API contract. No endpoint/auth is invented. A reviewed local adapter, approved tenant/service identity and operator release are required before private one-job worker execution. No cron/public dispatch endpoint is active. Preserve error-code-only logging, lease tokens, stable idempotency and tenant checks. Privacy operations require explicit operator approval; no automatic retention schedule or unauthenticated deletion API.

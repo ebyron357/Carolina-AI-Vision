@@ -156,3 +156,32 @@ test('preserved gallery theme controls remain operational', async ({
   await page.getByRole('menuitem', { name: 'Light', exact: true }).click()
   await expect(page.locator('html')).not.toHaveClass(/dark/)
 })
+
+test('operational endpoints expose no configuration or PII', async ({
+  request,
+}) => {
+  const health = await request.get('/api/health')
+  expect(health.status()).toBe(200)
+  expect(await health.json()).toEqual({ status: 'ok' })
+  const ready = await request.get('/api/ready')
+  expect(ready.status()).toBe(503)
+  expect(await ready.json()).toEqual({ status: 'unavailable' })
+  expect(ready.headers()['cache-control']).toContain('no-store')
+})
+test('management service context survives landing-to-inquiry navigation', async ({
+  page,
+}) => {
+  await page.goto('/consulting')
+  await page.locator('a[href="/consulting/request?service=management"]').click()
+  await expect(page.getByLabel('What can we help with?')).toHaveValue(
+    'management'
+  )
+})
+
+test('website package context survives landing-to-quote navigation', async ({
+  page,
+}) => {
+  await page.goto('/studio')
+  await page.locator('a[href="/studio/quote?package=growth"]').click()
+  await expect(page.getByLabel('Project scope')).toHaveValue('growth')
+})

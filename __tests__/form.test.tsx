@@ -73,3 +73,43 @@ test('changing answers clears stale preliminary observations', () => {
   )
   expect(screen.queryByText('Preliminary observations')).not.toBeInTheDocument()
 })
+
+test('unchanged retries reuse reference while edited inquiries get a new reference', async () => {
+  let count = 0
+  Object.defineProperty(global.crypto, 'randomUUID', {
+    configurable: true,
+    value: () => `synthetic-id-${++count}`,
+  })
+  const original = global.fetch
+  const mock = jest.fn().mockResolvedValue({
+    ok: false,
+    json: async () => ({ message: 'Retry later' }),
+  })
+  global.fetch = mock
+  try {
+    const { container } = render(<LeadForm journey="website" enabled={true} />)
+    const form = container.querySelector('form')!
+    fireEvent.submit(form)
+    await waitFor(() => expect(screen.getByRole('alert')).toBeInTheDocument())
+    fireEvent.submit(form)
+    await waitFor(() => expect(mock).toHaveBeenCalledTimes(2))
+    const first = JSON.parse(mock.mock.calls[0][1].body),
+      second = JSON.parse(mock.mock.calls[1][1].body)
+    expect(second.requestId).toBe(first.requestId)
+    fireEvent.change(screen.getByLabelText(/What pages, features/), {
+      target: { value: 'Changed project' },
+    })
+    await waitFor(() =>
+      expect(
+        screen.getByRole('button', { name: 'Send my request →' })
+      ).not.toBeDisabled()
+    )
+    fireEvent.submit(form)
+    await waitFor(() => expect(mock).toHaveBeenCalledTimes(3))
+    expect(JSON.parse(mock.mock.calls[2][1].body).requestId).not.toBe(
+      first.requestId
+    )
+  } finally {
+    global.fetch = original
+  }
+})

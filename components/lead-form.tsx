@@ -6,12 +6,15 @@ export function LeadForm({
   journey,
   enabled,
   initialService,
+  initialPackage,
 }: {
   journey: Journey
   enabled: boolean
   initialService?: Service
+  initialPackage?: 'essential' | 'showcase' | 'growth'
 }) {
   const requestId = useRef('')
+  const lastPayload = useRef('')
   const receipt = useRef<HTMLHeadingElement>(null)
   const errorBox = useRef<HTMLParagraphElement>(null)
   const pending = useRef(false)
@@ -30,7 +33,6 @@ export function LeadForm({
     event.preventDefault()
     if (!enabled || pending.current) return
     pending.current = true
-    if (!requestId.current) requestId.current = crypto.randomUUID()
     setError('')
     setBusy(true)
     const data = new FormData(event.currentTarget)
@@ -39,14 +41,18 @@ export function LeadForm({
       journey,
       consent: data.get('consent') === 'on',
       startedAt,
-      requestId: requestId.current,
       upgrades: data.getAll('upgrades'),
     }
     try {
+      const canonical = JSON.stringify(payload)
+      if (!requestId.current || canonical !== lastPayload.current) {
+        requestId.current = crypto.randomUUID()
+        lastPayload.current = canonical
+      }
       const response = await fetch('/api/leads', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ ...payload, requestId: requestId.current }),
       })
       const result = await response.json()
       if (!response.ok) {
@@ -103,7 +109,9 @@ export function LeadForm({
           ? 'Your business, in focus.'
           : journey === 'website'
             ? 'Tell us what you want to build.'
-            : 'What could work better?'}
+            : journey === 'contact'
+              ? 'How can we help?'
+              : 'What could work better?'}
       </h2>
       {!enabled && (
         <p className="notice">
@@ -255,7 +263,11 @@ export function LeadForm({
         <>
           <div className="field">
             <label htmlFor="package">Project scope</label>
-            <select id="package" name="package">
+            <select
+              id="package"
+              name="package"
+              defaultValue={initialPackage || 'unsure'}
+            >
               <option value="unsure">Help me choose</option>
               <option value="essential">Essential presence</option>
               <option value="showcase">Service showcase</option>
@@ -293,7 +305,9 @@ export function LeadForm({
             ? 'What pages, features, and goals do you have?'
             : journey === 'consulting'
               ? 'What process or business goal should we explore?'
-              : 'What would you like us to review?'}{' '}
+              : journey === 'contact'
+                ? 'What would you like to discuss?'
+                : 'What would you like us to review?'}{' '}
           (required)
         </label>
         <textarea id="goal" name="goal" rows={4} required maxLength={2000} />

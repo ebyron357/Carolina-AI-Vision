@@ -98,7 +98,17 @@ export default function Studio() {
               <p className="micro">
                 Quote after scope review. No published package pricing.
               </p>
-              <Link className="text-link" href="/studio/quote">
+              <Link
+                className="text-link"
+                href={
+                  '/studio/quote?package=' +
+                  (name === 'Essential presence'
+                    ? 'essential'
+                    : name === 'Service showcase'
+                      ? 'showcase'
+                      : 'growth')
+                }
+              >
                 Request this scope →
               </Link>
             </article>

@@ -1,7 +1,7 @@
 import { createHmac } from 'node:crypto'
-import { Pool } from 'pg'
+import { createDatabase } from '@/lib/database'
 import { type Lead, classifyLead } from '@/lib/leads'
-let pool: Pool | undefined
+let pool: ReturnType<typeof createDatabase> | undefined
 export function intakeEnabled() {
   return (
     process.env.LEAD_INTAKE_ENABLED === 'true' &&
@@ -46,28 +46,7 @@ export async function captureLead(
   return rows[0]
 }
 export async function storeLead(lead: Lead, requestId: string, ip: string) {
-  if (!pool) {
-    const url = new URL(process.env.DATABASE_URL!)
-    if (!['postgres:', 'postgresql:'].includes(url.protocol))
-      throw new Error('Invalid database configuration')
-    for (const key of [
-      'ssl',
-      'sslmode',
-      'sslcert',
-      'sslkey',
-      'sslrootcert',
-      'uselibpqcompat',
-    ])
-      url.searchParams.delete(key)
-    pool = new Pool({
-      connectionString: url.toString(),
-      ssl: { rejectUnauthorized: true },
-      max: 3,
-      connectionTimeoutMillis: 5000,
-      statement_timeout: 8000,
-      query_timeout: 10000,
-    })
-  }
+  if (!pool) pool = createDatabase(process.env.DATABASE_URL!)
   return captureLead(
     (sql, values) => pool!.query(sql, values),
     lead,
@@ -75,4 +54,17 @@ export async function storeLead(lead: Lead, requestId: string, ip: string) {
     ip,
     process.env.LEAD_HASH_SECRET!
   )
+}
+
+export async function intakeReady() {
+  if (!intakeEnabled()) return false
+  try {
+    if (!pool) pool = createDatabase(process.env.DATABASE_URL!)
+    const result = await pool.query<{ ready: boolean }>(
+      'SELECT carolina.intake_ready() AS ready'
+    )
+    return result.rows[0]?.ready === true
+  } catch {
+    return false
+  }
 }

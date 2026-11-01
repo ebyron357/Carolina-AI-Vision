@@ -31,6 +31,12 @@ pnpm audit --prod
 
 A CI workflow was prepared but cannot be included by the publishing integration (workflow permission restriction). It is provided separately for the owner to add. Hosted CI execution remains unverified.
 
+See [Phase 3 evidence](docs/PHASE3-EVIDENCE.md) for the current verification boundaries.
+
+## Phase 3 operations
+
+Checksum-verified migrations, execution-only roles, app liveness/intake readiness, local outbox processing with leases/retries/dead letters, and explicit privacy operations are implemented. No ClientVerse-specific adapter or live database is activated. See [release operations](docs/RELEASE-OPERATIONS.md) before enabling anything.
+
 ## Intake configuration — disabled pending approval
 
 The inspected project has no environment variables or connected storage. The PostgreSQL migration/adapter implements persistence, consent/audit records, server classification, pending CRM outbox, database-backed throttling and duplicate receipts. Local embedded PostgreSQL tests verify real SQL behavior, not a connected Vercel database.

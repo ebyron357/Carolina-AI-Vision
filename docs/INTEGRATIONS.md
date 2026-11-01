@@ -1,3 +1,7 @@
+# Current Phase 3 operations
+
+See [RELEASE-OPERATIONS.md](RELEASE-OPERATIONS.md) for the current checksum migrations, execution-only database roles, worker transport port, lease/retry/dead-letter/status and privacy operations. Earlier Phase 2 notes below describe the starting point; Phase 3 supersedes its table-grant guidance and statement that no processor exists. No actual ClientVerse adapter/API contract is verified.
+
 # Lead persistence and internal CRM integration
 
 ## VERIFIED implementation; live activation BLOCKED

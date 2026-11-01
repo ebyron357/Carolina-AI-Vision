@@ -44,7 +44,9 @@ export default function Consulting() {
               href={
                 name === 'AI Growth Blueprint'
                   ? '/blueprint'
-                  : '/consulting/request'
+                  : name === 'Ongoing Growth Management'
+                    ? '/consulting/request?service=management'
+                    : '/consulting/request?service=automation'
               }
             >
               {name === 'AI Growth Blueprint'
