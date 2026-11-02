@@ -39,12 +39,16 @@ Open http://localhost:3000. The current page is an upstream starter, not the bus
 
 ## Quality checks
 
+After installing dependencies, run:
+
 ```bash
 pnpm lint
-pnpm exec tsc --noEmit
+pnpm typegen && pnpm exec tsc --noEmit
 pnpm test -- --runInBand --watch=false
 pnpm build
 ```
+
+`pnpm typegen` runs the existing `next typegen` script to generate Next.js route types and `next-env.d.ts` before standalone TypeScript checking. A clean checkout does not include these generated files; running `tsc` alone can report missing helpers such as `PageProps`. Type generation does not require first starting the development server or building the app. Rerun it after adding, removing, or renaming routes.
 
 These are **commands to run**, not passing test claims. The repository's Jest configuration references `ts-jest` and `identity-obj-proxy`, which are not declared in the inspected `package.json`; verify and repair test setup before treating Jest results as reliable. A working CI workflow has not been confirmed.
 
