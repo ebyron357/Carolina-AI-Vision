@@ -45,7 +45,11 @@ proxy.ts                  Network boundary (successor to middleware.ts)
 ### Typed async route props
 
 `params` and `searchParams` are **async** in Next.js 16 — always `await` them.
-Use the generated global helpers (run `pnpm typegen` after adding routes):
+Use the generated global helpers. After installing dependencies, run
+`pnpm typegen && pnpm exec tsc --noEmit` on a clean checkout and after
+adding, removing, or renaming routes. Type generation must succeed before
+standalone TypeScript checking; it creates the route types and `next-env.d.ts`
+without requiring a development server or full build:
 
 ```ts
 export default async function Page(props: PageProps<'/demo/cache'>) {
@@ -87,7 +91,7 @@ in `next.config.ts`. Trigger per-navigation types with the `<Link>`
 
 ## Conventions
 
-- Path alias: `@/*` → repo root.
+- Path alias: `@/*` → repository root (`./*` in `tsconfig.json`); for example, `@/components/ui/button` resolves to `components/ui/button.tsx`.
 - Types via `type` (not `interface`) — enforced by ESLint.
 - No `console` / no `any` (ESLint errors).
 
@@ -106,7 +110,7 @@ This repository is being converted from an upstream UI starter into the **Caroli
 
 ### Coding and security expectations
 
-- Preserve `app/`-based alias `@/*` as mapped by `tsconfig.json`; check Jest's incorrect `src/` mapping before relying on tests.
+- Preserve the TypeScript alias described in Conventions above; check Jest's incorrect `src/` mapping before relying on tests.
 - Existing `proxy.ts` has an empty matcher; **it supplies no active authorization mechanism**. Any sensitive workflow needs explicit server-side authorization, validation, abuse controls, secrets protection, and privacy-by-design.
 - Require accessible, responsive, reduced-motion friendly UI, semantically labeled inputs, keyboard access, informative errors and honest content.
 - Treat lead intake, payment, booking, analytics, CRM, audit engines and deployment as unverified until real checks demonstrate functionality.
